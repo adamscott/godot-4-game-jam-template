@@ -1,6 +1,4 @@
-[gd_scene load_steps=5 format=3 uid="uid://b7aqhhpgj3ni3"]
-
-[ext_resource type="Script" path="res://autoload/loading/loading.gd" id="1_h42ua"]
+[gd_scene load_steps=4 format=3 uid="uid://d1o7j0y4ref"]
 
 [sub_resource type="Animation" id="Animation_mku30"]
 length = 0.001
@@ -88,19 +86,11 @@ _data = {
 "spin": SubResource("Animation_033cu")
 }
 
-[node name="Loading" type="Node"]
-script = ExtResource("1_h42ua")
-
-[node name="Screen" type="Control" parent="."]
-unique_name_in_owner = true
+[node name="Loading" type="Control"]
 layout_mode = 3
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
+anchors_preset = 0
 
-[node name="Background" type="ColorRect" parent="Screen"]
+[node name="Background" type="ColorRect" parent="."]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -109,7 +99,7 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0.141176, 0.141176, 0.141176, 1)
 
-[node name="Widget" type="Control" parent="Screen"]
+[node name="Widget" type="Control" parent="."]
 layout_mode = 1
 anchors_preset = 3
 anchor_left = 1.0
@@ -121,27 +111,27 @@ offset_top = -40.0
 grow_horizontal = 0
 grow_vertical = 0
 
-[node name="Bar2" type="Node2D" parent="Screen/Widget"]
+[node name="Bar2" type="Node2D" parent="Widget"]
 
-[node name="Polygon2D" type="Polygon2D" parent="Screen/Widget/Bar2"]
+[node name="Polygon2D" type="Polygon2D" parent="Widget/Bar2"]
 polygon = PackedVector2Array(-5, -20, 5, -20, 5, 20, -5, 20)
 metadata/_edit_lock_ = true
 
-[node name="Bar" type="Node2D" parent="Screen/Widget"]
+[node name="Bar" type="Node2D" parent="Widget"]
 position = Vector2(-14, 0)
 
-[node name="Polygon2D" type="Polygon2D" parent="Screen/Widget/Bar"]
+[node name="Polygon2D" type="Polygon2D" parent="Widget/Bar"]
 polygon = PackedVector2Array(-5, -20, 5, -20, 5, 20, -5, 20)
 metadata/_edit_lock_ = true
 
-[node name="Bar3" type="Node2D" parent="Screen/Widget"]
+[node name="Bar3" type="Node2D" parent="Widget"]
 position = Vector2(14, 0)
 
-[node name="Polygon2D" type="Polygon2D" parent="Screen/Widget/Bar3"]
+[node name="Polygon2D" type="Polygon2D" parent="Widget/Bar3"]
 polygon = PackedVector2Array(-5, -20, 5, -20, 5, 20, -5, 20)
 metadata/_edit_lock_ = true
 
-[node name="AnimationPlayer" type="AnimationPlayer" parent="Screen/Widget"]
+[node name="AnimationPlayer" type="AnimationPlayer" parent="Widget"]
 autoplay = "spin"
 libraries = {
 "": SubResource("AnimationLibrary_p5pun")

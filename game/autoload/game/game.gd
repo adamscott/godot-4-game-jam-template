@@ -3,13 +3,13 @@ extends Node
 @export var loading: = false:
 	set = _set_loading
 
-@onready var screen: Control = %Screen
+@onready var loading_screen: = %LoadingScreen
 
 func _ready() -> void:
 	_set_loading(loading)
 
 func _set_loading(val: bool) -> void:
 	loading = val
-	if not screen:
+	if not loading_screen:
 		return
-	screen.visible = loading
+	loading_screen.visible = loading

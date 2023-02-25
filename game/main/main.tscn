@@ -12,6 +12,16 @@ script = ExtResource("4_nibo4")
 name = "Entry"
 metadata/graph_offset = Vector2(345, 141.5)
 
+[sub_resource type="Resource" id="Resource_jvlar"]
+script = ExtResource("4_nibo4")
+name = "Intro"
+metadata/graph_offset = Vector2(765, 141.5)
+
+[sub_resource type="Resource" id="Resource_fc7q7"]
+script = ExtResource("4_nibo4")
+name = "LoadingIntro"
+metadata/graph_offset = Vector2(522, 141.5)
+
 [sub_resource type="Resource" id="Resource_l71kv"]
 script = ExtResource("4_nibo4")
 name = "LoadingMainMenu"
@@ -22,47 +32,11 @@ script = ExtResource("4_nibo4")
 name = "MainMenu"
 metadata/graph_offset = Vector2(1049, 141.5)
 
-[sub_resource type="Resource" id="Resource_fc7q7"]
-script = ExtResource("4_nibo4")
-name = "LoadingIntro"
-metadata/graph_offset = Vector2(522, 141.5)
-
-[sub_resource type="Resource" id="Resource_jvlar"]
-script = ExtResource("4_nibo4")
-name = "Intro"
-metadata/graph_offset = Vector2(765, 141.5)
-
-[sub_resource type="Resource" id="Resource_ekfj8"]
-script = ExtResource("6_8hexx")
-name = "main_menu_loaded"
-
-[sub_resource type="Resource" id="Resource_sj8la"]
-script = ExtResource("5_0vv63")
-from = "LoadingMainMenu"
-to = "MainMenu"
-conditions = {
-"main_menu_loaded": SubResource("Resource_ekfj8")
-}
-priority = 0
-
 [sub_resource type="Resource" id="Resource_ju1w3"]
 script = ExtResource("5_0vv63")
 from = "Entry"
 to = "LoadingIntro"
 conditions = {}
-priority = 0
-
-[sub_resource type="Resource" id="Resource_ko2rh"]
-script = ExtResource("6_8hexx")
-name = "intro_loaded"
-
-[sub_resource type="Resource" id="Resource_hkw5r"]
-script = ExtResource("5_0vv63")
-from = "LoadingIntro"
-to = "Intro"
-conditions = {
-"intro_loaded": SubResource("Resource_ko2rh")
-}
 priority = 0
 
 [sub_resource type="Resource" id="Resource_ihprn"]
@@ -78,13 +52,13 @@ conditions = {
 }
 priority = 0
 
-[sub_resource type="Resource" id="Resource_041j5"]
-script = ExtResource("6_8hexx")
-name = "t(\"skip\") and main_menu_loaded"
-
 [sub_resource type="Resource" id="Resource_esd2m"]
 script = ExtResource("6_8hexx")
 name = "t(\"end\") and main_menu_loaded"
+
+[sub_resource type="Resource" id="Resource_041j5"]
+script = ExtResource("6_8hexx")
+name = "t(\"skip\") and main_menu_loaded"
 
 [sub_resource type="Resource" id="Resource_lhafd"]
 script = ExtResource("5_0vv63")
@@ -93,6 +67,32 @@ to = "MainMenu"
 conditions = {
 "t(\"end\") and main_menu_loaded": SubResource("Resource_esd2m"),
 "t(\"skip\") and main_menu_loaded": SubResource("Resource_041j5")
+}
+priority = 0
+
+[sub_resource type="Resource" id="Resource_ko2rh"]
+script = ExtResource("6_8hexx")
+name = "intro_loaded"
+
+[sub_resource type="Resource" id="Resource_hkw5r"]
+script = ExtResource("5_0vv63")
+from = "LoadingIntro"
+to = "Intro"
+conditions = {
+"intro_loaded": SubResource("Resource_ko2rh")
+}
+priority = 0
+
+[sub_resource type="Resource" id="Resource_ekfj8"]
+script = ExtResource("6_8hexx")
+name = "main_menu_loaded"
+
+[sub_resource type="Resource" id="Resource_sj8la"]
+script = ExtResource("5_0vv63")
+from = "LoadingMainMenu"
+to = "MainMenu"
+conditions = {
+"main_menu_loaded": SubResource("Resource_ekfj8")
 }
 priority = 0
 

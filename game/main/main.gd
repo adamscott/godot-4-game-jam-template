@@ -51,7 +51,7 @@ func _on_main_state_machine_transited(from, to) -> void:
 			_to_main_menu()
 
 func _to_loading_intro() -> void:
-	Loading.loading = true
+	Game.loading = true
 	ResourceLoader.load_threaded_request(INTRO_PATH, "PackedScene")
 
 func _update_loading_intro(delta: float) -> void:
@@ -59,7 +59,7 @@ func _update_loading_intro(delta: float) -> void:
 	main_state_machine.set_param("intro_loaded", status == ResourceLoader.THREAD_LOAD_LOADED)
 
 func _from_loading_intro() -> void:
-	Loading.loading = false
+	Game.loading = false
 
 func _to_intro() -> void:
 	_load_main_menu_scene()
@@ -83,7 +83,7 @@ func _on_intro_end() -> void:
 	main_state_machine.set_trigger("end")
 
 func _to_loading_main_menu() -> void:
-	Loading.loading = true
+	Game.loading = true
 	_load_main_menu_scene()
 
 func _update_loading_main_menu(delta: float) -> void:
@@ -94,7 +94,7 @@ func _update_main_menu_loaded_status() -> void:
 	main_state_machine.set_param("main_menu_loaded", status == ResourceLoader.THREAD_LOAD_LOADED)
 
 func _from_loading_main_menu() -> void:
-	Loading.loading = false
+	Game.loading = false
 
 func _load_main_menu_scene() -> void:
 	ResourceLoader.load_threaded_request(MAIN_MENU_PATH, "PackedScene")

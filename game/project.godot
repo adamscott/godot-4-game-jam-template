@@ -19,7 +19,7 @@ boot_splash/show_image=false
 
 [autoload]
 
-Loading="*res://autoload/loading/loading.tscn"
+Game="*res://autoload/game/game.tscn"
 BeehaveGlobalMetrics="*res://addons/beehave/metrics/beehave_global_metrics.gd"
 
 [editor_plugins]

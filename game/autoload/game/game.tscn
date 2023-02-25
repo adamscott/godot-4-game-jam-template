@@ -1,0 +1,15 @@
+[gd_scene load_steps=3 format=3 uid="uid://0cumrr0on714"]
+
+[ext_resource type="Script" path="res://autoload/game/game.gd" id="1_xgv7g"]
+[ext_resource type="PackedScene" uid="uid://d1o7j0y4ref" path="res://scenes/loading/loading.tscn" id="2_41rxr"]
+
+[node name="Game" type="Node"]
+script = ExtResource("1_xgv7g")
+
+[node name="LoadingScreen" parent="." instance=ExtResource("2_41rxr")]
+unique_name_in_owner = true
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
