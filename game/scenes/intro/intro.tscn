@@ -1,0 +1,66 @@
+[gd_scene load_steps=5 format=3 uid="uid://ikevo28wlcxo"]
+
+[ext_resource type="Script" path="res://scenes/intro/intro.gd" id="1_h6wi2"]
+[ext_resource type="PackedScene" uid="uid://3owi160pippf" path="res://scenes/intro/scenes/godot/godot.tscn" id="2_73y3u"]
+
+[sub_resource type="Animation" id="Animation_yc8qc"]
+resource_name = "intro"
+length = 5.0
+tracks/0/type = "method"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(2),
+"transitions": PackedFloat32Array(1),
+"values": [{
+"args": [],
+"method": &"_on_end"
+}]
+}
+tracks/1/type = "animation"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("GodotIntro/AnimationPlayer")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"clips": PackedStringArray("logo"),
+"times": PackedFloat32Array(0)
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_jhb63"]
+_data = {
+"intro": SubResource("Animation_yc8qc")
+}
+
+[node name="Intro" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_h6wi2")
+
+[node name="Background" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.141176, 0.141176, 0.141176, 1)
+
+[node name="GodotIntro" parent="." instance=ExtResource("2_73y3u")]
+layout_mode = 1
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+autoplay = "intro"
+libraries = {
+"": SubResource("AnimationLibrary_jhb63")
+}
+
+[editable path="GodotIntro"]

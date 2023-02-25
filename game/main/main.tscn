@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=3 uid="uid://db76ew8umo6yt"]
+[gd_scene load_steps=23 format=3 uid="uid://db76ew8umo6yt"]
 
 [ext_resource type="Script" path="res://main/main.gd" id="1_dm1np"]
 [ext_resource type="Script" path="res://addons/imjp94.yafsm/src/StateMachinePlayer.gd" id="2_pktoh"]
@@ -10,24 +10,27 @@
 [sub_resource type="Resource" id="Resource_4wd88"]
 script = ExtResource("4_nibo4")
 name = "Entry"
-metadata/graph_offset = Vector2(385, 81.5)
+metadata/graph_offset = Vector2(345, 141.5)
 
 [sub_resource type="Resource" id="Resource_l71kv"]
 script = ExtResource("4_nibo4")
 name = "LoadingMainMenu"
-metadata/graph_offset = Vector2(565, 81.5)
+metadata/graph_offset = Vector2(864, 41.5)
 
 [sub_resource type="Resource" id="Resource_ei8hq"]
 script = ExtResource("4_nibo4")
 name = "MainMenu"
-metadata/graph_offset = Vector2(869, 81.5)
+metadata/graph_offset = Vector2(1049, 141.5)
 
-[sub_resource type="Resource" id="Resource_ju2r3"]
-script = ExtResource("5_0vv63")
-from = "Entry"
-to = "LoadingMainMenu"
-conditions = {}
-priority = 0
+[sub_resource type="Resource" id="Resource_fc7q7"]
+script = ExtResource("4_nibo4")
+name = "LoadingIntro"
+metadata/graph_offset = Vector2(522, 141.5)
+
+[sub_resource type="Resource" id="Resource_jvlar"]
+script = ExtResource("4_nibo4")
+name = "Intro"
+metadata/graph_offset = Vector2(765, 141.5)
 
 [sub_resource type="Resource" id="Resource_ekfj8"]
 script = ExtResource("6_8hexx")
@@ -42,16 +45,76 @@ conditions = {
 }
 priority = 0
 
+[sub_resource type="Resource" id="Resource_ju1w3"]
+script = ExtResource("5_0vv63")
+from = "Entry"
+to = "LoadingIntro"
+conditions = {}
+priority = 0
+
+[sub_resource type="Resource" id="Resource_ko2rh"]
+script = ExtResource("6_8hexx")
+name = "intro_loaded"
+
+[sub_resource type="Resource" id="Resource_hkw5r"]
+script = ExtResource("5_0vv63")
+from = "LoadingIntro"
+to = "Intro"
+conditions = {
+"intro_loaded": SubResource("Resource_ko2rh")
+}
+priority = 0
+
+[sub_resource type="Resource" id="Resource_ihprn"]
+script = ExtResource("6_8hexx")
+name = "t(\"end\")"
+
+[sub_resource type="Resource" id="Resource_k46gs"]
+script = ExtResource("5_0vv63")
+from = "Intro"
+to = "LoadingMainMenu"
+conditions = {
+"t(\"end\")": SubResource("Resource_ihprn")
+}
+priority = 0
+
+[sub_resource type="Resource" id="Resource_041j5"]
+script = ExtResource("6_8hexx")
+name = "t(\"skip\") and main_menu_loaded"
+
+[sub_resource type="Resource" id="Resource_esd2m"]
+script = ExtResource("6_8hexx")
+name = "t(\"end\") and main_menu_loaded"
+
+[sub_resource type="Resource" id="Resource_lhafd"]
+script = ExtResource("5_0vv63")
+from = "Intro"
+to = "MainMenu"
+conditions = {
+"t(\"end\") and main_menu_loaded": SubResource("Resource_esd2m"),
+"t(\"skip\") and main_menu_loaded": SubResource("Resource_041j5")
+}
+priority = 0
+
 [sub_resource type="Resource" id="Resource_qb0ud"]
 script = ExtResource("3_0euwo")
 states = {
 "Entry": SubResource("Resource_4wd88"),
+"Intro": SubResource("Resource_jvlar"),
+"LoadingIntro": SubResource("Resource_fc7q7"),
 "LoadingMainMenu": SubResource("Resource_l71kv"),
 "MainMenu": SubResource("Resource_ei8hq")
 }
 transitions = {
 "Entry": {
-"LoadingMainMenu": SubResource("Resource_ju2r3")
+"LoadingIntro": SubResource("Resource_ju1w3")
+},
+"Intro": {
+"LoadingMainMenu": SubResource("Resource_k46gs"),
+"MainMenu": SubResource("Resource_lhafd")
+},
+"LoadingIntro": {
+"Intro": SubResource("Resource_hkw5r")
 },
 "LoadingMainMenu": {
 "MainMenu": SubResource("Resource_sj8la")
@@ -68,5 +131,6 @@ script = ExtResource("1_dm1np")
 unique_name_in_owner = true
 script = ExtResource("2_pktoh")
 state_machine = SubResource("Resource_qb0ud")
+update_process_mode = 2
 
 [connection signal="transited" from="StateMachines/MainStateMachine" to="." method="_on_main_state_machine_transited"]
