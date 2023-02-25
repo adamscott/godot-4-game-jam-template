@@ -1,6 +1,72 @@
-[gd_scene load_steps=2 format=3 uid="uid://db76ew8umo6yt"]
+[gd_scene load_steps=14 format=3 uid="uid://db76ew8umo6yt"]
 
 [ext_resource type="Script" path="res://main/main.gd" id="1_dm1np"]
+[ext_resource type="Script" path="res://addons/imjp94.yafsm/src/StateMachinePlayer.gd" id="2_pktoh"]
+[ext_resource type="Script" path="res://addons/imjp94.yafsm/src/states/StateMachine.gd" id="3_0euwo"]
+[ext_resource type="Script" path="res://addons/imjp94.yafsm/src/states/State.gd" id="4_nibo4"]
+[ext_resource type="Script" path="res://addons/imjp94.yafsm/src/transitions/Transition.gd" id="5_0vv63"]
+[ext_resource type="Script" path="res://addons/imjp94.yafsm/src/conditions/ExpressionCondition.gd" id="6_8hexx"]
+
+[sub_resource type="Resource" id="Resource_4wd88"]
+script = ExtResource("4_nibo4")
+name = "Entry"
+metadata/graph_offset = Vector2(385, 81.5)
+
+[sub_resource type="Resource" id="Resource_l71kv"]
+script = ExtResource("4_nibo4")
+name = "LoadingMainMenu"
+metadata/graph_offset = Vector2(565, 81.5)
+
+[sub_resource type="Resource" id="Resource_ei8hq"]
+script = ExtResource("4_nibo4")
+name = "MainMenu"
+metadata/graph_offset = Vector2(869, 81.5)
+
+[sub_resource type="Resource" id="Resource_ju2r3"]
+script = ExtResource("5_0vv63")
+from = "Entry"
+to = "LoadingMainMenu"
+conditions = {}
+priority = 0
+
+[sub_resource type="Resource" id="Resource_ekfj8"]
+script = ExtResource("6_8hexx")
+name = "main_menu_loaded"
+
+[sub_resource type="Resource" id="Resource_sj8la"]
+script = ExtResource("5_0vv63")
+from = "LoadingMainMenu"
+to = "MainMenu"
+conditions = {
+"main_menu_loaded": SubResource("Resource_ekfj8")
+}
+priority = 0
+
+[sub_resource type="Resource" id="Resource_qb0ud"]
+script = ExtResource("3_0euwo")
+states = {
+"Entry": SubResource("Resource_4wd88"),
+"LoadingMainMenu": SubResource("Resource_l71kv"),
+"MainMenu": SubResource("Resource_ei8hq")
+}
+transitions = {
+"Entry": {
+"LoadingMainMenu": SubResource("Resource_ju2r3")
+},
+"LoadingMainMenu": {
+"MainMenu": SubResource("Resource_sj8la")
+}
+}
+name = ""
 
 [node name="Main" type="Node"]
 script = ExtResource("1_dm1np")
+
+[node name="StateMachines" type="Node" parent="."]
+
+[node name="MainStateMachine" type="Node" parent="StateMachines"]
+unique_name_in_owner = true
+script = ExtResource("2_pktoh")
+state_machine = SubResource("Resource_qb0ud")
+
+[connection signal="transited" from="StateMachines/MainStateMachine" to="." method="_on_main_state_machine_transited"]

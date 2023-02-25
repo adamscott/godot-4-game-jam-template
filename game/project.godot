@@ -20,3 +20,8 @@ boot_splash/show_image=false
 [autoload]
 
 Loading="*res://autoload/loading/loading.tscn"
+BeehaveGlobalMetrics="*res://addons/beehave/metrics/beehave_global_metrics.gd"
+
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/imjp94.yafsm/plugin.cfg", "res://addons/gdUnit4/plugin.cfg", "res://addons/beehave/plugin.cfg")
