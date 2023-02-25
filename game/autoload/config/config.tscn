@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://cm5uhceeekxpa"]
+
+[ext_resource type="Script" path="res://autoload/config/config.gd" id="1_11hkp"]
+
+[node name="Config" type="Node"]
+script = ExtResource("1_11hkp")

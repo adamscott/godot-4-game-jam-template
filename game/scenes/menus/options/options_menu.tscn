@@ -10,3 +10,80 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_x4i7p")
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+
+[node name="MarginContainer2" type="MarginContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/margin_bottom = 20
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/MarginContainer2"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="BackButton" type="Button" parent="MarginContainer/VBoxContainer/MarginContainer2/HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Back"
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/MarginContainer2/HBoxContainer"]
+layout_mode = 2
+text = "Options"
+
+[node name="TabContainer" type="TabContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Game" type="PanelContainer" parent="MarginContainer/VBoxContainer/TabContainer"]
+layout_mode = 2
+
+[node name="VScrollBar" type="VScrollBar" parent="MarginContainer/VBoxContainer/TabContainer/Game"]
+layout_mode = 2
+size_flags_horizontal = 8
+
+[node name="Graphics" type="PanelContainer" parent="MarginContainer/VBoxContainer/TabContainer"]
+visible = false
+layout_mode = 2
+
+[node name="VScrollBar" type="VScrollBar" parent="MarginContainer/VBoxContainer/TabContainer/Graphics"]
+layout_mode = 2
+
+[node name="Audio" type="PanelContainer" parent="MarginContainer/VBoxContainer/TabContainer"]
+visible = false
+layout_mode = 2
+
+[node name="VScrollBar" type="VScrollBar" parent="MarginContainer/VBoxContainer/TabContainer/Audio"]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/margin_top = 20
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+alignment = 2
+
+[node name="CancelButton" type="Button" parent="MarginContainer/VBoxContainer/MarginContainer/HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Cancel"
+
+[node name="ApplyButton" type="Button" parent="MarginContainer/VBoxContainer/MarginContainer/HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Apply"

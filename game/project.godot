@@ -19,6 +19,8 @@ boot_splash/show_image=false
 
 [autoload]
 
+Config="*res://autoload/config/config.tscn"
+AudioSettings="*res://autoload/settings/audio/audio_settings.tscn"
 Game="*res://autoload/game/game.tscn"
 BeehaveGlobalMetrics="*res://addons/beehave/metrics/beehave_global_metrics.gd"
 
