@@ -1,9 +1,7 @@
-# Blender
-*.blend[0-9]
-*_RetopoFlow_AutoSave.blend
 
 # Godot-specific ignores
 .import/
+.godot/
 export.cfg
 export_presets.cfg
 
