@@ -25,6 +25,10 @@ DisplaySettings="*res://autoload/settings/display/display_settings.tscn"
 Game="*res://autoload/game/game.tscn"
 BeehaveGlobalMetrics="*res://addons/beehave/metrics/beehave_global_metrics.gd"
 
+[display]
+
+window/size/resizable=false
+
 [editor_plugins]
 
 enabled=PackedStringArray("res://addons/imjp94.yafsm/plugin.cfg", "res://addons/gdUnit4/plugin.cfg", "res://addons/beehave/plugin.cfg")
