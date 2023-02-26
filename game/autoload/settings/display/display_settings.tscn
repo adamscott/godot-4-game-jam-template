@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://7ijd2el4otyl"]
+
+[ext_resource type="Script" path="res://autoload/settings/display/display_settings.gd" id="1_370y5"]
+
+[node name="DisplaySettings" type="Node"]
+script = ExtResource("1_370y5")
