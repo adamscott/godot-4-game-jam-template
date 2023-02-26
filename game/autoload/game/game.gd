@@ -5,8 +5,10 @@ extends Node
 
 @onready var loading_screen: = %LoadingScreen
 
+
 func _ready() -> void:
 	_set_loading(loading)
+
 
 func _set_loading(val: bool) -> void:
 	loading = val

@@ -9,21 +9,25 @@ var default_config: ConfigFile
 var is_dirty: bool = false:
 	set = _set_is_dirty
 
+
 func _set_is_dirty(val: bool) -> void:
 	var before: = is_dirty
 	is_dirty = val
 	if before != is_dirty:
 		emit_signal(&"dirty_changed")
 
+
 func _init() -> void:
 	source_config = ConfigFile.new()
 	default_config = ConfigFile.new()
 	is_dirty = false
 
+
 @warning_ignore("native_method_override")
 func clear() -> void:
 	super.clear()
 	source_config.clear()
+
 
 @warning_ignore("native_method_override")
 func get_sections() -> PackedStringArray:
@@ -35,6 +39,7 @@ func get_sections() -> PackedStringArray:
 			config_file_sections.append(default_section)
 
 	return config_file_sections
+
 
 @warning_ignore("native_method_override")
 func get_section_keys(section: String) -> PackedStringArray:
@@ -52,11 +57,13 @@ func get_section_keys(section: String) -> PackedStringArray:
 
 	return config_file_section_keys
 
+
 func get_val(section: String, key: String, default = null) -> Variant:
 	if default == null:
 		default = get_default_value(section, key)
 
 	return super.get_value(section, key, default)
+
 
 func set_val(section: String, key: String, value) -> void:
 	var default_value = get_default_value(section, key)
@@ -74,6 +81,7 @@ func set_val(section: String, key: String, value) -> void:
 	else:
 		check_dirty()
 
+
 func is_value_dirty(section: String, key: String) -> bool:
 	if super.has_section(section) != source_config.has_section(section):
 		return true
@@ -82,6 +90,7 @@ func is_value_dirty(section: String, key: String) -> bool:
 		return true
 
 	return super.get_value(section, key) != source_config.get_value(section, key)
+
 
 @warning_ignore("native_method_override")
 func load(path: String) -> Error:
@@ -92,6 +101,7 @@ func load(path: String) -> Error:
 			_set_is_dirty(false)
 	return err
 
+
 @warning_ignore("native_method_override")
 func load_encrypted(path: String, key: PackedByteArray) -> Error:
 	var err: = super.load_encrypted(path, key)
@@ -100,6 +110,7 @@ func load_encrypted(path: String, key: PackedByteArray) -> Error:
 			source_config.load_encrypted(path, key)
 			_set_is_dirty(false)
 	return err
+
 
 @warning_ignore("native_method_override")
 func load_encrypted_pass(path: String, password: String) -> Error:
@@ -110,6 +121,7 @@ func load_encrypted_pass(path: String, password: String) -> Error:
 			_set_is_dirty(false)
 	return err
 
+
 @warning_ignore("native_method_override")
 func parse(data: String) -> Error:
 	var err: = super.parse(data)
@@ -119,12 +131,14 @@ func parse(data: String) -> Error:
 			_set_is_dirty(false)
 	return err
 
+
 func revert() -> void:
 	super.clear()
 
 	for section in source_config.get_sections():
 		for key in source_config.get_section_keys(section):
 			super.set_value(section, key, source_config.get_value(section, key))
+
 
 @warning_ignore("native_method_override")
 func save(path: String) -> Error:
@@ -134,6 +148,7 @@ func save(path: String) -> Error:
 			update_source_config()
 	return err
 
+
 @warning_ignore("native_method_override")
 func save_encrypted(path: String, key: PackedByteArray) -> Error:
 	var err: = super.save_encrypted(path, key)
@@ -141,6 +156,7 @@ func save_encrypted(path: String, key: PackedByteArray) -> Error:
 		OK:
 			update_source_config()
 	return err
+
 
 @warning_ignore("native_method_override")
 func save_encrypted_pass(path: String, password: String) -> Error:
@@ -150,15 +166,19 @@ func save_encrypted_pass(path: String, password: String) -> Error:
 			update_source_config()
 	return err
 
+
 func set_default_value(section: String, key: String, value) -> void:
 	default_config.set_value(section, key, value)
+
 
 func get_default_value(section: String, key: String):
 	return default_config.get_value(section, key, null)
 
+
 func revert_val(section: String, key: String) -> void:
 	super.set_value(section, key, source_config.get_value(section, key))
 	check_dirty()
+
 
 func update_source_config() -> void:
 	source_config.clear()
