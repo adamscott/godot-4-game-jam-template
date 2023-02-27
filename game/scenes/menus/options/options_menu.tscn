@@ -1,6 +1,15 @@
-[gd_scene load_steps=2 format=3 uid="uid://bhp4o4q771h15"]
+[gd_scene load_steps=4 format=3 uid="uid://bhp4o4q771h15"]
 
 [ext_resource type="Script" path="res://scenes/menus/options/options_menu.gd" id="1_x4i7p"]
+
+[sub_resource type="Animation" id="Animation_r815i"]
+resource_name = "init"
+length = 0.001
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_hiydv"]
+_data = {
+"init": SubResource("Animation_r815i")
+}
 
 [node name="OptionsMenu" type="Control"]
 layout_mode = 3
@@ -48,7 +57,6 @@ layout_mode = 2
 size_flags_vertical = 3
 
 [node name="Game" type="PanelContainer" parent="MarginContainer/VBoxContainer/TabContainer"]
-visible = false
 layout_mode = 2
 
 [node name="VScrollBar" type="VScrollBar" parent="MarginContainer/VBoxContainer/TabContainer/Game"]
@@ -106,6 +114,7 @@ layout_mode = 2
 size_flags_horizontal = 8
 
 [node name="Audio" type="PanelContainer" parent="MarginContainer/VBoxContainer/TabContainer"]
+visible = false
 layout_mode = 2
 
 [node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/TabContainer/Audio"]
@@ -141,11 +150,11 @@ min_value = -100.0
 max_value = 0.0
 step = 0.01
 
-[node name="VolumeSFXLabel" type="Label" parent="MarginContainer/VBoxContainer/TabContainer/Audio/MarginContainer/VBoxContainer/HBoxContainer/GridContainer"]
+[node name="VolumeSfxLabel" type="Label" parent="MarginContainer/VBoxContainer/TabContainer/Audio/MarginContainer/VBoxContainer/HBoxContainer/GridContainer"]
 layout_mode = 2
 text = "Sound effects"
 
-[node name="VolumeSFXHSlider" type="HSlider" parent="MarginContainer/VBoxContainer/TabContainer/Audio/MarginContainer/VBoxContainer/HBoxContainer/GridContainer"]
+[node name="VolumeSfxHSlider" type="HSlider" parent="MarginContainer/VBoxContainer/TabContainer/Audio/MarginContainer/VBoxContainer/HBoxContainer/GridContainer"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(300, 0)
 layout_mode = 2
@@ -153,11 +162,11 @@ min_value = -100.0
 max_value = 0.0
 step = 0.01
 
-[node name="VolumeBGMLabel" type="Label" parent="MarginContainer/VBoxContainer/TabContainer/Audio/MarginContainer/VBoxContainer/HBoxContainer/GridContainer"]
+[node name="VolumeBgmLabel" type="Label" parent="MarginContainer/VBoxContainer/TabContainer/Audio/MarginContainer/VBoxContainer/HBoxContainer/GridContainer"]
 layout_mode = 2
 text = "Music"
 
-[node name="VolumeBGMHSlider" type="HSlider" parent="MarginContainer/VBoxContainer/TabContainer/Audio/MarginContainer/VBoxContainer/HBoxContainer/GridContainer"]
+[node name="VolumeBgmHSlider" type="HSlider" parent="MarginContainer/VBoxContainer/TabContainer/Audio/MarginContainer/VBoxContainer/HBoxContainer/GridContainer"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(300, 0)
 layout_mode = 2
@@ -179,15 +188,33 @@ layout_mode = 2
 theme_override_constants/separation = 10
 alignment = 2
 
-[node name="CancelButton" type="Button" parent="MarginContainer/VBoxContainer/MarginContainer/HBoxContainer"]
+[node name="RevertToDefaultButton" type="Button" parent="MarginContainer/VBoxContainer/MarginContainer/HBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
-text = "Cancel"
+text = "Revert to default"
+
+[node name="CancelChangesButton" type="Button" parent="MarginContainer/VBoxContainer/MarginContainer/HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Cancel changes"
 
 [node name="ApplyButton" type="Button" parent="MarginContainer/VBoxContainer/MarginContainer/HBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 text = "Apply"
 
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+unique_name_in_owner = true
+libraries = {
+"": SubResource("AnimationLibrary_hiydv")
+}
+
+[connection signal="pressed" from="MarginContainer/VBoxContainer/MarginContainer2/HBoxContainer/BackButton" to="." method="_on_back_button_pressed"]
 [connection signal="toggled" from="MarginContainer/VBoxContainer/TabContainer/Graphics/MarginContainer/VBoxContainer/HBoxContainer2/BorderlessCheckBox" to="." method="_on_borderless_check_box_toggled"]
 [connection signal="item_selected" from="MarginContainer/VBoxContainer/TabContainer/Graphics/MarginContainer/VBoxContainer/HBoxContainer/VSyncModeOptionButton" to="." method="_on_v_sync_mode_option_button_item_selected"]
+[connection signal="value_changed" from="MarginContainer/VBoxContainer/TabContainer/Audio/MarginContainer/VBoxContainer/HBoxContainer/GridContainer/VolumeMainHSlider" to="." method="_on_volume_main_h_slider_value_changed"]
+[connection signal="value_changed" from="MarginContainer/VBoxContainer/TabContainer/Audio/MarginContainer/VBoxContainer/HBoxContainer/GridContainer/VolumeSfxHSlider" to="." method="_on_volume_sfx_h_slider_value_changed"]
+[connection signal="value_changed" from="MarginContainer/VBoxContainer/TabContainer/Audio/MarginContainer/VBoxContainer/HBoxContainer/GridContainer/VolumeBgmHSlider" to="." method="_on_volume_bgm_h_slider_value_changed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/MarginContainer/HBoxContainer/RevertToDefaultButton" to="." method="_on_revert_to_default_button_pressed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/MarginContainer/HBoxContainer/CancelChangesButton" to="." method="_on_cancel_changes_button_pressed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/MarginContainer/HBoxContainer/ApplyButton" to="." method="_on_apply_button_pressed"]

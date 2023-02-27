@@ -71,15 +71,19 @@ func set_val(section: String, key: String, value) -> void:
 		value = null
 
 	super.set_value(section, key, value)
+	prints("set_value", section, key, value)
+	check_dirty()
 
-	if super.has_section(section) != source_config.has_section(section):
-		_set_is_dirty(true)
-	elif super.has_section(section) and super.has_section_key(section, key) != source_config.has_section_key(section, key):
-		_set_is_dirty(true)
-	elif super.has_section(section) and super.has_section_key(section, key) and super.get_value(section, key) != source_config.get_value(section, key):
-		_set_is_dirty(true)
-	else:
-		check_dirty()
+	#if super.has_section(section) != source_config.has_section(section):
+	#	is_dirty = true
+	#elif super.has_section(section) and super.has_section_key(section, key) != source_config.has_section_key(section, key):
+	#	is_dirty = true
+	#elif super.has_section(section) and super.has_section_key(section, key) and super.get_value(section, key) != source_config.get_value(section, key):
+	#	is_dirty = true
+	#else:
+	#	check_dirty()
+
+
 
 
 func is_value_dirty(section: String, key: String) -> bool:
@@ -95,11 +99,15 @@ func is_value_dirty(section: String, key: String) -> bool:
 @warning_ignore("native_method_override")
 func load(path: String) -> Error:
 	var err: = super.load(path)
+	assert(err == OK)
 	match err:
 		OK:
-			source_config.load(path)
-			_set_is_dirty(false)
+			update_source_config()
 	return err
+
+
+func load_default(path: String) -> Error:
+	return default_config.load(path)
 
 
 @warning_ignore("native_method_override")
@@ -107,8 +115,7 @@ func load_encrypted(path: String, key: PackedByteArray) -> Error:
 	var err: = super.load_encrypted(path, key)
 	match err:
 		OK:
-			source_config.load_encrypted(path, key)
-			_set_is_dirty(false)
+			update_source_config()
 	return err
 
 
@@ -117,8 +124,7 @@ func load_encrypted_pass(path: String, password: String) -> Error:
 	var err: = super.load_encrypted_pass(path, password)
 	match err:
 		OK:
-			source_config.load_encrypted_pass(path, password)
-			_set_is_dirty(false)
+			update_source_config()
 	return err
 
 
@@ -127,8 +133,7 @@ func parse(data: String) -> Error:
 	var err: = super.parse(data)
 	match err:
 		OK:
-			source_config.parse(data)
-			_set_is_dirty(false)
+			update_source_config()
 	return err
 
 
@@ -138,6 +143,8 @@ func revert() -> void:
 	for section in source_config.get_sections():
 		for key in source_config.get_section_keys(section):
 			super.set_value(section, key, source_config.get_value(section, key))
+
+	check_dirty()
 
 
 @warning_ignore("native_method_override")
@@ -167,7 +174,7 @@ func save_encrypted_pass(path: String, password: String) -> Error:
 	return err
 
 
-func set_default_value(section: String, key: String, value) -> void:
+func set_default_value(section: String, key: String, value: Variant) -> void:
 	default_config.set_value(section, key, value)
 
 
@@ -187,36 +194,36 @@ func update_source_config() -> void:
 		for key in super.get_section_keys(section):
 			source_config.set_value(section, key, super.get_value(section, key))
 
-	_set_is_dirty(false)
+	check_dirty()
 
 
 func check_dirty() -> void:
 	for section in source_config.get_sections():
 		if not super.has_section(section):
-			_set_is_dirty(true)
+			is_dirty = true
 			return
 
 		for key in source_config.get_section_keys(section):
 			if not super.has_section_key(section, key):
-				_set_is_dirty(true)
+				is_dirty = true
 				return
 
 			if super.get_value(section, key) != source_config.get_value(section, key):
-				_set_is_dirty(true)
+				is_dirty = true
 				return
 
 	for section in super.get_sections():
 		if not source_config.has_section(section):
-			_set_is_dirty(true)
+			is_dirty = true
 			return
 
 		for key in super.get_section_keys(section):
 			if not source_config.has_section_key(section, key):
-				_set_is_dirty(true)
+				is_dirty = true
 				return
 
 			if super.get_value(section, key) != source_config.get_value(section, key):
-				_set_is_dirty(true)
+				is_dirty = true
 				return
 
-	_set_is_dirty(false)
+	is_dirty = false

@@ -5,6 +5,9 @@ signal dirty_changed
 const USER_CONFIG_PATH: = "user://config.cfg"
 const DEFAULT_OPTIONS_PATH: = "res://autoload/options/default_options.cfg"
 
+var is_dirty: bool:
+	get = get_is_dirty
+
 var config_file: RevertableConfigFile
 
 
@@ -23,12 +26,12 @@ func load_config() -> void:
 
 	match err:
 		OK:
-			pass
+			config_file.load_default(DEFAULT_OPTIONS_PATH)
 		ERR_FILE_NOT_FOUND:
 			var file_not_found_err: = config_file.save(USER_CONFIG_PATH)
 			match file_not_found_err:
 				OK:
-					pass
+					config_file.load_default(DEFAULT_OPTIONS_PATH)
 				_:
 					push_warning("Could not create options file. Options will not be saved.")
 		_:
@@ -67,7 +70,7 @@ func is_value_dirty(section: String, key: String) -> bool:
 	return config_file.is_value_dirty(section, key)
 
 
-func is_dirty() -> bool:
+func get_is_dirty() -> bool:
 	return config_file.is_dirty
 
 
