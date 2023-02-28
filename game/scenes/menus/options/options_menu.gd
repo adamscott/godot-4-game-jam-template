@@ -7,8 +7,9 @@ signal back
 @onready var apply_button: = %ApplyButton
 @onready var animation_player: = %AnimationPlayer
 
-@onready var borderless_checkbox: = %BorderlessCheckBox
+@onready var window_mode_option_button: = %WindowModeOptionButton
 @onready var vsync_mode_option_button: = %VSyncModeOptionButton
+@onready var borderless_checkbox: = %BorderlessCheckBox
 
 @onready var volume_main_hslider: = %VolumeMainHSlider
 @onready var volume_sfx_hslider: = %VolumeSfxHSlider
@@ -27,8 +28,9 @@ func init() -> void:
 
 
 func _init_options() -> void:
-	borderless_checkbox.button_pressed = Config.get_value("display", "borderless")
+	window_mode_option_button.selected = Config.get_value("display", "window_mode")
 	vsync_mode_option_button.selected = Config.get_value("display", "vsync_mode")
+	borderless_checkbox.button_pressed = Config.get_value("display", "borderless")
 
 	volume_main_hslider.value = db_to_linear(Config.get_value("audio", "level_master"))
 	volume_sfx_hslider.value = db_to_linear(Config.get_value("audio", "level_sfx"))
@@ -47,8 +49,12 @@ func _on_borderless_check_box_toggled(button_pressed: bool) -> void:
 	Config.set_value("display", "borderless", button_pressed)
 
 
+func _on_window_mode_option_button_item_selected(index: int) -> void:
+	Config.set_value("display", "window_mode", window_mode_option_button.get_item_id(index))
+
+
 func _on_v_sync_mode_option_button_item_selected(index: int) -> void:
-	Config.set_value("display", "vsync_mode", index)
+	Config.set_value("display", "vsync_mode", vsync_mode_option_button.get_item_id(index))
 
 
 func _on_volume_main_h_slider_value_changed(value: float) -> void:
