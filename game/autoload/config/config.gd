@@ -51,9 +51,8 @@ func revert() -> void:
 		OK:
 			for section in config_file.get_sections():
 				for keys in config_file.get_section_keys(section):
-					prints(keys)
 					for key in keys:
-						source_config.set_value(section, key, config_file.get_value(section, key, null))
+						source_config.set_value(section, key, config_file.get_value(section, key))
 		ERR_FILE_NOT_FOUND:
 			var file_not_found_err: = config_file.save(USER_CONFIG_PATH)
 			match file_not_found_err:
@@ -77,8 +76,9 @@ func update_is_dirty() -> void:
 				if not key in config_file.get_section_keys(section):
 					is_dirty = true
 					return
-				is_dirty = not is_same(config_file.get_value(section, key), source_config.get_value(section, key))
-
+				is_dirty = not is_same(get_value(section, key), get_source_value(section, key))
+				if is_dirty:
+					return
 
 	for section in config_file.get_sections():
 		if not section in source_config.get_sections():
@@ -89,7 +89,9 @@ func update_is_dirty() -> void:
 				if not key in source_config.get_section_keys(section):
 					is_dirty = true
 					return
-				is_dirty = not is_same(config_file.get_value(section, key), source_config.get_value(section, key))
+				is_dirty = not is_same(get_value(section, key), get_source_value(section, key))
+				if is_dirty:
+					return
 
 	is_dirty = false
 
@@ -127,17 +129,11 @@ func set_value(section: String, key: String, value: Variant) -> void:
 		update_is_dirty()
 		return
 
-	config_value = default_values.get_value(section, key, default_value)
-	if is_same(value, config_value):
-		config_file.set_value(section, key, null)
-		update_is_dirty()
-		return
-
 	config_file.set_value(section, key, value)
 	update_is_dirty()
 
 
-func get_value(section: String, key: String, default = null):
+func get_value(section: String, key: String, default: Variant = null):
 	var default_value: = Resource.new()
 
 	var value: Variant
@@ -149,7 +145,18 @@ func get_value(section: String, key: String, default = null):
 	if not is_same(value, default_value):
 		return value
 
-	value = default_values.get_value(section, key, default_value)
+	return default
+
+
+func get_source_value(section: String, key: String, default: Variant = null):
+	var default_value: = Resource.new()
+
+	var value: Variant
+	value = source_config.get_value(section, key, default_value)
+	if not is_same(value, default_value):
+		return value
+
+	value = default_config_file.get_value(section, key, default_value)
 	if not is_same(value, default_value):
 		return value
 
