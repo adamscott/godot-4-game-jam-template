@@ -1,49 +1,106 @@
 extends Node
 
-signal dirty_changed
+signal dirty_changed(dirty: bool)
 
 const USER_CONFIG_PATH: = "user://config.cfg"
 const DEFAULT_OPTIONS_PATH: = "res://autoload/options/default_options.cfg"
 
+var source_config: ConfigFile
+var config_file: ConfigFile
+var default_config_file: ConfigFile
+var default_values: ConfigFile
+
 var is_dirty: bool:
-	get = get_is_dirty
-
-var config_file: RevertableConfigFile
+	set = set_is_dirty
 
 
-func _on_RevertableConfigFile_dirty_changed() -> void:
-	emit_signal("dirty_changed")
+func set_is_dirty(val: bool) -> void:
+	if val == is_dirty:
+		return
+	is_dirty = val
+	emit_signal(&"dirty_changed", val)
 
 
 func _ready() -> void:
-	config_file = RevertableConfigFile.new()
-	config_file.dirty_changed.connect(_on_RevertableConfigFile_dirty_changed)
+	config_file = ConfigFile.new()
+	source_config = ConfigFile.new()
+	default_config_file = ConfigFile.new()
+	default_values = ConfigFile.new()
 	load_config()
 
 
 func load_config() -> void:
-	var err: = config_file.load(USER_CONFIG_PATH)
+	revert()
 
+	var err: Error
+	err = default_config_file.load(DEFAULT_OPTIONS_PATH)
 	match err:
 		OK:
-			config_file.load_default(DEFAULT_OPTIONS_PATH)
+			pass
+		ERR_FILE_NOT_FOUND:
+			push_warning("Could not locate default options file.")
+		_:
+			push_warning("Could not load default options file. There will not be default options")
+
+
+func revert() -> void:
+	config_file.clear()
+	source_config.clear()
+	var err: = config_file.load(USER_CONFIG_PATH)
+	match err:
+		OK:
+			for section in config_file.get_sections():
+				for keys in config_file.get_section_keys(section):
+					prints(keys)
+					for key in keys:
+						source_config.set_value(section, key, config_file.get_value(section, key, null))
 		ERR_FILE_NOT_FOUND:
 			var file_not_found_err: = config_file.save(USER_CONFIG_PATH)
 			match file_not_found_err:
 				OK:
-					config_file.load_default(DEFAULT_OPTIONS_PATH)
+					pass
 				_:
 					push_warning("Could not create options file. Options will not be saved.")
 		_:
 			push_warning("Could not load options file. Options will be set to default")
 
+	is_dirty = false
 
-func revert() -> void:
-	config_file.revert()
+
+func update_is_dirty() -> void:
+	for section in source_config.get_sections():
+		if not section in config_file.get_sections():
+			is_dirty = true
+			return
+		for keys in source_config.get_section_keys(section):
+			for key in keys:
+				if not key in config_file.get_section_keys(section):
+					is_dirty = true
+					return
+				is_dirty = config_file.get_value(section, key) != source_config.get_value(section, key)
+
+
+	for section in config_file.get_sections():
+		if not section in source_config.get_sections():
+			is_dirty = true
+			return
+		for keys in config_file.get_section_keys(section):
+			for key in keys:
+				if not key in source_config.get_section_keys(section):
+					is_dirty = true
+					return
+				is_dirty = config_file.get_value(section, key) != source_config.get_value(section, key)
+
+	is_dirty = false
 
 
 func save() -> void:
-	config_file.save(USER_CONFIG_PATH)
+	var err: = config_file.save(USER_CONFIG_PATH)
+	match err:
+		OK:
+			revert()
+		_:
+			push_warning("Error while saving config.")
 
 
 func get_sections() -> PackedStringArray:
@@ -54,29 +111,55 @@ func get_section_keys(section: String) -> PackedStringArray:
 	return config_file.get_section_keys(section)
 
 
-func set_value(section: String, key: String, value) -> void:
-	config_file.set_val(section, key, value)
+func set_value(section: String, key: String, value: Variant) -> void:
+	var default_value: = Resource.new()
+
+	if value == null and not is_same(config_file.get_value(section, key, default_value), default_value):
+		config_file.set_value(section, key, null)
+		update_is_dirty()
+		return
+
+	if not is_same(value, default_config_file.get_value(section, key, default_value)):
+		config_file.set_value(section, key, null)
+		update_is_dirty()
+		return
+
+	if not is_same(value, default_values.get_value(section, key, default_value)):
+		config_file.set_value(section, key, null)
+		update_is_dirty()
+		return
+
+	if not is_same(value, source_config.get_value(section, key, default_value)):
+		config_file.set_value(section, key, null)
+		update_is_dirty()
+		return
+
+	config_file.set_value(section, key, value)
+	update_is_dirty()
 
 
 func get_value(section: String, key: String, default = null):
-	return config_file.get_val(section, key, default)
+	var default_value: = Resource.new()
+
+	var value: Variant
+	value = config_file.get_value(section, key, default_value)
+	if not is_same(value, default_value):
+		return value
+
+	value = default_config_file.get_value(section, key, default_value)
+	if not is_same(value, default_value):
+		return value
+
+	value = default_values.get_value(section, key, default_value)
+	if not is_same(value, default_value):
+		return value
+
+	return default
 
 
-func revert_val(section: String, key: String) -> void:
-	config_file.revert_val(section, key)
+func set_default_value(section: String, key: String, value: Variant) -> void:
+	default_values.set_value(section, key, value)
 
 
-func is_value_dirty(section: String, key: String) -> bool:
-	return config_file.is_value_dirty(section, key)
-
-
-func get_is_dirty() -> bool:
-	return config_file.is_dirty
-
-
-func set_default_value(section: String, key: String, value) -> void:
-	config_file.set_default_value(section, key, value)
-
-
-func get_default_value(section: String, key: String):
-	return config_file.get_default_value(section, key)
+func get_default_value(section: String, key: String, default: Variant = null):
+	return default_values.get_value(section, key, default)

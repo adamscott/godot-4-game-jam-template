@@ -86,5 +86,6 @@ func _on_apply_button_pressed() -> void:
 	DisplaySettings.apply_config()
 
 
-func _on_Config_dirty_changed() -> void:
+func _on_Config_dirty_changed(dirty: bool) -> void:
+	prints("config dirty changed: %s" % dirty)
 	_update_dirty()
