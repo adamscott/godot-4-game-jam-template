@@ -14,6 +14,8 @@ var bgm_bus_level: float:
 	set = set_bgm_bus_level,
 	get = get_bgm_bus_level
 
+var default_values: = {}
+
 
 func set_master_bus_level(val: float) -> void:
 	var idx: = AudioServer.get_bus_index(MASTER_BUS)
@@ -45,15 +47,25 @@ func get_bgm_bus_level() -> float:
 	return AudioServer.get_bus_volume_db(idx)
 
 
-func _ready() -> void:
+func _init() -> void:
 	init_default_values()
+
+
+func _ready() -> void:
+	init_config_default_values()
 	apply_config()
 
 
 func init_default_values() -> void:
-	Config.set_default_value("audio", "level_master", get_master_bus_default_level())
-	Config.set_default_value("audio", "level_sfx", get_sfx_bus_default_level())
-	Config.set_default_value("audio", "level_bgm", get_bgm_bus_default_level())
+	default_values["level_master"] = get_master_bus_default_level()
+	default_values["level_sfx"] = get_sfx_bus_default_level()
+	default_values["level_bgm"] = get_bgm_bus_default_level()
+
+
+func init_config_default_values() -> void:
+	Config.set_default_value("audio", "level_master", default_values["level_master"])
+	Config.set_default_value("audio", "level_sfx", default_values["level_sfx"])
+	Config.set_default_value("audio", "level_bgm", default_values["level_bgm"])
 
 
 func revert_to_default_config() -> void:
@@ -73,12 +85,12 @@ func apply_config() -> void:
 
 
 func get_master_bus_default_level() -> float:
-	return 0.0
+	return linear_to_db(1.0)
 
 
 func get_sfx_bus_default_level() -> float:
-	return 0.0
+	return linear_to_db(1.0)
 
 
 func get_bgm_bus_default_level() -> float:
-	return 0.0
+	return linear_to_db(1.0)

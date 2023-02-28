@@ -146,8 +146,7 @@ text = "Main"
 unique_name_in_owner = true
 custom_minimum_size = Vector2(300, 0)
 layout_mode = 2
-min_value = -100.0
-max_value = 0.0
+max_value = 1.0
 step = 0.01
 
 [node name="VolumeSfxLabel" type="Label" parent="MarginContainer/VBoxContainer/TabContainer/Audio/MarginContainer/VBoxContainer/HBoxContainer/GridContainer"]
@@ -158,8 +157,7 @@ text = "Sound effects"
 unique_name_in_owner = true
 custom_minimum_size = Vector2(300, 0)
 layout_mode = 2
-min_value = -100.0
-max_value = 0.0
+max_value = 1.0
 step = 0.01
 
 [node name="VolumeBgmLabel" type="Label" parent="MarginContainer/VBoxContainer/TabContainer/Audio/MarginContainer/VBoxContainer/HBoxContainer/GridContainer"]
@@ -170,8 +168,7 @@ text = "Music"
 unique_name_in_owner = true
 custom_minimum_size = Vector2(300, 0)
 layout_mode = 2
-min_value = -100.0
-max_value = 0.0
+max_value = 1.0
 step = 0.01
 
 [node name="VScrollBar" type="VScrollBar" parent="MarginContainer/VBoxContainer/TabContainer/Audio"]

@@ -30,9 +30,9 @@ func _init_options() -> void:
 	borderless_checkbox.button_pressed = Config.get_value("display", "borderless")
 	vsync_mode_option_button.selected = Config.get_value("display", "vsync_mode")
 
-	volume_main_hslider.value = Config.get_value("audio", "level_master")
-	volume_sfx_hslider.value = Config.get_value("audio", "level_sfx")
-	volume_bgm_hslider.value = Config.get_value("audio", "level_bgm")
+	volume_main_hslider.value = db_to_linear(Config.get_value("audio", "level_master"))
+	volume_sfx_hslider.value = db_to_linear(Config.get_value("audio", "level_sfx"))
+	volume_bgm_hslider.value = db_to_linear(Config.get_value("audio", "level_bgm"))
 
 
 func _update_dirty() -> void:
@@ -52,15 +52,15 @@ func _on_v_sync_mode_option_button_item_selected(index: int) -> void:
 
 
 func _on_volume_main_h_slider_value_changed(value: float) -> void:
-	Config.set_value("audio", "level_master", value)
+	Config.set_value("audio", "level_master", linear_to_db(value))
 
 
 func _on_volume_sfx_h_slider_value_changed(value: float) -> void:
-	Config.set_value("audio", "level_sfx", value)
+	Config.set_value("audio", "level_sfx", linear_to_db(value))
 
 
 func _on_volume_bgm_h_slider_value_changed(value: float) -> void:
-	Config.set_value("audio", "level_bgm", value)
+	Config.set_value("audio", "level_bgm", linear_to_db(value))
 
 
 func _on_revert_to_default_button_pressed() -> void:
@@ -87,5 +87,4 @@ func _on_apply_button_pressed() -> void:
 
 
 func _on_Config_dirty_changed(dirty: bool) -> void:
-	prints("config dirty changed: %s" % dirty)
 	_update_dirty()

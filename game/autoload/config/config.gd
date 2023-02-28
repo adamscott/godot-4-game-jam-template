@@ -50,9 +50,8 @@ func revert() -> void:
 	match err:
 		OK:
 			for section in config_file.get_sections():
-				for keys in config_file.get_section_keys(section):
-					for key in keys:
-						source_config.set_value(section, key, config_file.get_value(section, key))
+				for key in config_file.get_section_keys(section):
+					source_config.set_value(section, key, config_file.get_value(section, key))
 		ERR_FILE_NOT_FOUND:
 			var file_not_found_err: = config_file.save(USER_CONFIG_PATH)
 			match file_not_found_err:
@@ -71,27 +70,25 @@ func update_is_dirty() -> void:
 		if not section in config_file.get_sections():
 			is_dirty = true
 			return
-		for keys in source_config.get_section_keys(section):
-			for key in keys:
-				if not key in config_file.get_section_keys(section):
-					is_dirty = true
-					return
-				is_dirty = not is_same(get_value(section, key), get_source_value(section, key))
-				if is_dirty:
+		for key in source_config.get_section_keys(section):
+			if not key in config_file.get_section_keys(section):
+				is_dirty = true
+				return
+			is_dirty = not is_same(get_value(section, key), get_source_value(section, key))
+			if is_dirty:
 					return
 
 	for section in config_file.get_sections():
 		if not section in source_config.get_sections():
 			is_dirty = true
 			return
-		for keys in config_file.get_section_keys(section):
-			for key in keys:
-				if not key in source_config.get_section_keys(section):
-					is_dirty = true
-					return
-				is_dirty = not is_same(get_value(section, key), get_source_value(section, key))
-				if is_dirty:
-					return
+		for key in config_file.get_section_keys(section):
+			if not key in source_config.get_section_keys(section):
+				is_dirty = true
+				return
+			is_dirty = not is_same(get_value(section, key), get_source_value(section, key))
+			if is_dirty:
+				return
 
 	is_dirty = false
 
@@ -145,6 +142,10 @@ func get_value(section: String, key: String, default: Variant = null):
 	if not is_same(value, default_value):
 		return value
 
+	value = default_values.get_value(section, key, default_value)
+	if not is_same(value, default_value):
+		return value
+
 	return default
 
 
@@ -157,6 +158,10 @@ func get_source_value(section: String, key: String, default: Variant = null):
 		return value
 
 	value = default_config_file.get_value(section, key, default_value)
+	if not is_same(value, default_value):
+		return value
+
+	value = default_values.get_value(section, key, default_value)
 	if not is_same(value, default_value):
 		return value
 
