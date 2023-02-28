@@ -77,7 +77,7 @@ func update_is_dirty() -> void:
 				if not key in config_file.get_section_keys(section):
 					is_dirty = true
 					return
-				is_dirty = config_file.get_value(section, key) != source_config.get_value(section, key)
+				is_dirty = not is_same(config_file.get_value(section, key), source_config.get_value(section, key))
 
 
 	for section in config_file.get_sections():
@@ -89,7 +89,7 @@ func update_is_dirty() -> void:
 				if not key in source_config.get_section_keys(section):
 					is_dirty = true
 					return
-				is_dirty = config_file.get_value(section, key) != source_config.get_value(section, key)
+				is_dirty = not is_same(config_file.get_value(section, key), source_config.get_value(section, key))
 
 	is_dirty = false
 
@@ -113,23 +113,22 @@ func get_section_keys(section: String) -> PackedStringArray:
 
 func set_value(section: String, key: String, value: Variant) -> void:
 	var default_value: = Resource.new()
+	var config_value: Variant
 
-	if value == null and not is_same(config_file.get_value(section, key, default_value), default_value):
+	config_value = config_file.get_value(section, key, default_value)
+	if value == null and not is_same(config_value, default_value):
 		config_file.set_value(section, key, null)
 		update_is_dirty()
 		return
 
-	if not is_same(value, default_config_file.get_value(section, key, default_value)):
+	config_value = default_config_file.get_value(section, key, default_value)
+	if is_same(value, config_value):
 		config_file.set_value(section, key, null)
 		update_is_dirty()
 		return
 
-	if not is_same(value, default_values.get_value(section, key, default_value)):
-		config_file.set_value(section, key, null)
-		update_is_dirty()
-		return
-
-	if not is_same(value, source_config.get_value(section, key, default_value)):
+	config_value = default_values.get_value(section, key, default_value)
+	if is_same(value, config_value):
 		config_file.set_value(section, key, null)
 		update_is_dirty()
 		return
