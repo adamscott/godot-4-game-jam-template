@@ -255,4 +255,5 @@ libraries = {
 }
 
 [connection signal="pressed" from="Menu/CenterContainer/VBoxContainer/VBoxContainer/OptionsButton" to="." method="_on_options_button_pressed"]
+[connection signal="pressed" from="Menu/CenterContainer/VBoxContainer/VBoxContainer/QuitButton" to="." method="_on_quit_button_pressed"]
 [connection signal="back" from="OptionsMenu" to="." method="_on_options_menu_back"]

@@ -1,4 +1,4 @@
-[gd_scene load_steps=23 format=3 uid="uid://db76ew8umo6yt"]
+[gd_scene load_steps=22 format=3 uid="uid://db76ew8umo6yt"]
 
 [ext_resource type="Script" path="res://main/main.gd" id="1_dm1np"]
 [ext_resource type="Script" path="res://addons/imjp94.yafsm/src/StateMachinePlayer.gd" id="2_pktoh"]
@@ -54,19 +54,14 @@ priority = 0
 
 [sub_resource type="Resource" id="Resource_esd2m"]
 script = ExtResource("6_8hexx")
-name = "t(\"end\") and main_menu_loaded"
-
-[sub_resource type="Resource" id="Resource_041j5"]
-script = ExtResource("6_8hexx")
-name = "t(\"skip\") and main_menu_loaded"
+name = "(t(\"end\") or t(\"skip\")) and main_menu_loaded"
 
 [sub_resource type="Resource" id="Resource_lhafd"]
 script = ExtResource("5_0vv63")
 from = "Intro"
 to = "MainMenu"
 conditions = {
-"t(\"end\") and main_menu_loaded": SubResource("Resource_esd2m"),
-"t(\"skip\") and main_menu_loaded": SubResource("Resource_041j5")
+"(t(\"end\") or t(\"skip\")) and main_menu_loaded": SubResource("Resource_esd2m")
 }
 priority = 0
 

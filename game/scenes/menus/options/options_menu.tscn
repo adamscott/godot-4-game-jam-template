@@ -57,7 +57,6 @@ layout_mode = 2
 size_flags_vertical = 3
 
 [node name="Game" type="PanelContainer" parent="MarginContainer/VBoxContainer/TabContainer"]
-visible = false
 layout_mode = 2
 
 [node name="VScrollBar" type="VScrollBar" parent="MarginContainer/VBoxContainer/TabContainer/Game"]
@@ -65,6 +64,7 @@ layout_mode = 2
 size_flags_horizontal = 8
 
 [node name="Graphics" type="PanelContainer" parent="MarginContainer/VBoxContainer/TabContainer"]
+visible = false
 layout_mode = 2
 
 [node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/TabContainer/Graphics"]

@@ -15,3 +15,7 @@ func _set_loading(val: bool) -> void:
 	if not loading_screen:
 		return
 	loading_screen.visible = loading
+
+
+func quit() -> void:
+	get_tree().quit()
