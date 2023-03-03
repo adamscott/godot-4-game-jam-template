@@ -190,7 +190,7 @@ static func to_regex(pattern :String) -> RegEx:
 
 static func prints_verbose(message :String) -> void:
 	if OS.is_stdout_verbose():
-		print_debug(message)
+		prints(message)
 
 
 static func free_instance(instance :Variant) -> bool:
@@ -224,6 +224,13 @@ static func release_connections(instance :Object):
 			#prints("callable", callable_.get_object())
 			if instance.has_signal(signal_.get_name()) and instance.is_connected(signal_.get_name(), callable_):
 				instance.disconnect(signal_.get_name(), callable_)
+	
+	# we go the new way to hold all gdunit timers in group 'GdUnitTimers'
+	for node in Engine.get_main_loop().root.get_children():
+		if node.is_in_group("GdUnitTimers"):
+			if is_instance_valid(node):
+				node.stop()
+				node.free()
 
 
 # if instance an mock or spy we need manually freeing the self reference

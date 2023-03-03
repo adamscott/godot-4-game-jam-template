@@ -2,6 +2,8 @@ extends Node
 
 signal sync_rpc_id_result_received
 
+const GdUnitExecutor = preload("res://addons/gdUnit4/src/core/GdUnitExecutor.gd")
+
 @onready var _client :GdUnitTcpClient = $GdUnitTcpClient
 @onready var _executor :GdUnitExecutor = $GdUnitExecutor
 
@@ -41,8 +43,8 @@ func _ready():
 		push_error(config_result.error_message())
 		_state = EXIT
 		return
-	_client.connect("connection_failed", Callable(self, "_on_connection_failed"))
-	GdUnitSignals.instance().gdunit_event.connect(Callable(self, "_on_gdunit_event"))
+	_client.connect("connection_failed", _on_connection_failed)
+	GdUnitSignals.instance().gdunit_event.connect(_on_gdunit_event)
 	var result := _client.start("127.0.0.1", _config.server_port())
 	if result.is_error():
 		push_error(result.error_message())

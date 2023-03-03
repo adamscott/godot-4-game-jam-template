@@ -16,10 +16,11 @@ var _test_param_index := -1
 var _line_number: int = -1
 var _script_path: String
 var _skipped := false
-var _error := ""
+var _skip_info := ""
 var _expect_to_interupt := false
 var _timer : Timer
 var _interupted :bool = false
+var _failed := false
 var _timeout :int
 var _default_timeout :int
 var _monitor := GodotGdErrorMonitor.new()
@@ -30,14 +31,13 @@ func _init():
 	_default_timeout = GdUnitSettings.test_timeout()
 
 
-func configure(name: String, line_number: int, script_path: String, timeout :int = DEFAULT_TIMEOUT, fuzzers :Array = [], iterations: int = 1, seed_ :int = -1, skipped := false) -> _TestCase:
+func configure(name: String, line_number: int, script_path: String, timeout :int = DEFAULT_TIMEOUT, fuzzers :Array = [], iterations: int = 1, seed_ :int = -1) -> _TestCase:
 	set_name(name)
 	_line_number = line_number
 	_fuzzers = fuzzers
 	_iterations = iterations
 	_seed = seed_
 	_script_path = script_path
-	_skipped = skipped
 	_timeout = _default_timeout
 	if timeout != DEFAULT_TIMEOUT:
 		_timeout = timeout
@@ -45,8 +45,10 @@ func configure(name: String, line_number: int, script_path: String, timeout :int
 
 
 func execute(test_parameter := Array(), iteration := 0):
+	
 	_current_iteration = iteration - 1
 	if iteration == 0:
+		_set_failure_handler()
 		set_timeout()
 	_monitor.start()
 	if not test_parameter.is_empty():
@@ -64,6 +66,7 @@ func execute(test_parameter := Array(), iteration := 0):
 
 func dispose():
 	stop_timer()
+	_remove_failure_handler()
 
 
 func _execute_test_case(name :String, test_parameter :Array):
@@ -83,27 +86,41 @@ func set_timeout():
 	var time :float = _timeout * 0.001
 	_timer = Timer.new()
 	add_child(_timer)
+	_timer.timeout.connect(func do_interrupt():
+		if has_fuzzer():
+			_report = GdUnitReport.new().create(GdUnitReport.INTERUPTED, line_number(), GdAssertMessages.fuzzer_interuped(_current_iteration, "timedout"))
+		else:
+			_report = GdUnitReport.new().create(GdUnitReport.INTERUPTED, line_number(), GdAssertMessages.test_timeout(timeout()))
+		_interupted = true
+		completed.emit()
+	)
 	_timer.set_one_shot(true)
-	_timer.connect('timeout', Callable(self, '_test_case_timeout'))
 	_timer.set_wait_time(time)
 	_timer.set_autostart(false)
 	_timer.start()
 
 
-func _test_case_timeout():
-	if has_fuzzer():
-		_report = GdUnitReport.new().create(GdUnitReport.INTERUPTED, line_number(), GdAssertMessages.fuzzer_interuped(_current_iteration, "timedout"))
-	else:
-		_report = GdUnitReport.new().create(GdUnitReport.INTERUPTED, line_number(), GdAssertMessages.test_timeout(timeout()))
-	_interupted = true
-	completed.emit()
+func _set_failure_handler() -> void:
+	if not GdUnitSignals.instance().gdunit_set_test_failed.is_connected(_failure_received):
+		GdUnitSignals.instance().gdunit_set_test_failed.connect(_failure_received)
+
+
+func _remove_failure_handler() -> void:
+	if GdUnitSignals.instance().gdunit_set_test_failed.is_connected(_failure_received):
+		GdUnitSignals.instance().gdunit_set_test_failed.disconnect(_failure_received)
+	
+
+func _failure_received(is_failed :bool) -> void:
+	# is already failed?
+	if _failed:
+		return
+	_failed = is_failed
+	Engine.set_meta("GD_TEST_FAILURE", is_failed)
 
 
 func stop_timer() :
 	# finish outstanding timeouts
 	if is_instance_valid(_timer):
-		if _timer.is_connected("timeout", Callable(self, '_test_case_timeout')):
-			_timer.disconnect("timeout", Callable(self, '_test_case_timeout'))
 		_timer.stop()
 		_timer.call_deferred("free")
 
@@ -131,6 +148,9 @@ func is_skipped() -> bool:
 func report() -> GdUnitReport:
 	return _report
 
+
+func skip_info() -> String:
+	return _skip_info
 
 func line_number() -> int:
 	return _line_number
@@ -171,7 +191,7 @@ func generate_seed() -> void:
 
 func skip(skipped :bool, error :String = "") -> void:
 	_skipped = skipped
-	_error = error
+	_skip_info = error
 
 
 func set_test_parameters(test_parameters :Array) -> void:
@@ -194,7 +214,7 @@ func test_case_names() -> PackedStringArray:
 	var test_case_names :=  PackedStringArray()
 	var test_name = get_name()
 	for index in _test_parameters.size():
-		test_case_names.append("%s:%d %s" % [test_name, index, str(_test_parameters[index])])
+		test_case_names.append("%s:%d %s" % [test_name, index, str(_test_parameters[index]).replace('"', "'")])
 	return test_case_names
 
 
