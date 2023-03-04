@@ -8,7 +8,7 @@ var selected: = false:
 
 func _init():
 	super._init()
-	
+
 	focus_mode = FOCUS_CLICK
 	mouse_filter = MOUSE_FILTER_IGNORE
 
@@ -25,8 +25,8 @@ func _draw():
 		draw_style_box(get_theme_stylebox("focus", "FlowChartLine"), Rect2(Vector2.ZERO, size))
 	else:
 		draw_style_box(get_theme_stylebox("normal", "FlowChartLine"), Rect2(Vector2.ZERO, size))
-	
-	
+
+
 	draw_texture(arrow, Vector2.ZERO - arrow.get_size() / 2 + size / 2, tint)
 
 func _get_minimum_size():
@@ -53,12 +53,12 @@ func join(from, to, offset=Vector2.ZERO, clip_rects=[]):
 	for clip_rect in clip_rects:
 		if clipped.size() == 0:
 			break
-		
+
 		line_from = clipped[0][0]
 		line_to = clipped[0][1]
 		clipped = Geometry2D.clip_polyline_with_polygon(
-			[line_from, line_to], 
-			[clip_rect.position, Vector2(clip_rect.position.x, clip_rect.end.y), 
+			[line_from, line_to],
+			[clip_rect.position, Vector2(clip_rect.position.x, clip_rect.end.y),
 				clip_rect.end, Vector2(clip_rect.end.x, clip_rect.position.y)]
 		)
 
@@ -69,7 +69,7 @@ func join(from, to, offset=Vector2.ZERO, clip_rects=[]):
 		from = center
 		to = center + dir * 0.1
 
-	# Extends line by 2px to minimise ugly seam	
+	# Extends line by 2px to minimise ugly seam
 	from -= dir * 2.0
 	to += dir * 2.0
 

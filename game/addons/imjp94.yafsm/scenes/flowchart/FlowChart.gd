@@ -61,11 +61,11 @@ var _copying_nodes = []
 var selection_stylebox = StyleBoxFlat.new()
 var grid_major_color = Color(1, 1, 1, 0.2)
 var grid_minor_color = Color(1, 1, 1, 0.05)
-	
+
 
 func _init():
 	super._init()
-	
+
 	focus_mode = FOCUS_ALL
 	selection_stylebox.bg_color = Color(0, 0, 0, 0.3)
 	selection_stylebox.set_border_width_all(1)
@@ -289,7 +289,7 @@ func _gui_input(event):
 						if _current_connection:
 							var pos = content_position(get_local_mouse_position())
 							var clip_rects = [_current_connection.from_node.get_rect()]
-							
+
 							# Snapping connecting line
 							for i in current_layer.content_nodes.get_child_count():
 								var child = current_layer.content_nodes.get_child(current_layer.content_nodes.get_child_count()-1 - i) # Inverse order to check from top to bottom of canvas
@@ -311,7 +311,7 @@ func _gui_input(event):
 							selected.modulate.a = 0.3
 							if is_snapping:
 								selected.position = selected.position.snapped(Vector2.ONE * snap)
-							selected.position -= selected.size / 2.0 
+							selected.position -= selected.size / 2.0
 							_on_node_dragged(current_layer, selected, dragged)
 							emit_signal("dragged", selected, dragged)
 							# Update connection pos
@@ -369,7 +369,7 @@ func _gui_input(event):
 							closest_d = d
 					if closest >= 0:
 						hit_node = current_layer._connections[connection_list[closest].from][connection_list[closest].to].line
-						
+
 				if event.pressed:
 					if not (hit_node in _selection) and not event.shift_pressed:
 						# Click on empty space
